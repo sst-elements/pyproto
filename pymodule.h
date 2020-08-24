@@ -23,14 +23,14 @@ void *genPyProtoPyModule(void);
 
 
 struct PyEvent_t {
-    PyObject_HEAD;
+    PyObject_HEAD
     PyObject *type;
     PyObject *dict; /* Holds elements from Events */
 };
 
 
 struct PyLink_t {
-    PyObject_HEAD;
+    PyObject_HEAD
     PyObject *object; /* PyProto Object */
     char *portName;
     size_t portNumber;
@@ -38,13 +38,13 @@ struct PyLink_t {
 
 
 struct PyProto_t {
-    PyObject_HEAD;
+    PyObject_HEAD
     char *name;
     PyObject *tcomponent;
     void *component;
 
-    typedef std::vector <std::pair<PyObject *, std::string>> clockArray_t;
-    typedef std::vector <std::pair<std::string, PyObject *>> linkArray_t;
+    typedef std::vector<std::pair<PyObject *, std::string>> clockArray_t;
+    typedef std::vector<std::pair<std::string, PyObject *>> linkArray_t;
 
     clockArray_t *clocks;
     linkArray_t *links;
@@ -58,7 +58,7 @@ struct PyProto_t {
 namespace SST {
     class Event;
     namespace PyProtoNS {
-        PyEvent_t *convertEventToPython(SST::Event *event);
+        PyEvent_t *convertEventToPython(SST::Event *);
 
         PyTypeObject *getEventObject();
 

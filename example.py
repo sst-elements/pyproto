@@ -27,32 +27,32 @@ class MyObject(PyProto):
         self.myActiveLink = self.addLink(link, "1us", self._linkHandle)
 
     def _linkHandle(self, event):
-        print self.name, "LinkHandle ", event
+        print(self.name, "LinkHandle ", event)
 
     def _clockHandle(self, cycle):
-        print self.name, "Clock ", cycle
+        print(self.name, "Clock ", cycle)
         ev = self.myPollLink.recv()
         if ev:
-            print self.name, "Received on pollLink: ", ev
+            print(self.name, "Received on pollLink: ", ev)
         if 0 == (cycle % 10):
             ev = MyEvent(cycle, self.countdown)
-            print self.name, "Sending event", ev
+            print(self.name, "Sending event", ev)
             link = self.myPollLink if 0 == (self.countdown % 2) else self.myActiveLink
             link.send(ev)
             self.countdown -= 1
         return (self.countdown == 0)
 
     def construct(self):
-        print self.name, "Construct()"
+        print(self.name, "Construct()")
 
     def init(self, phase):
-        print self.name, "init(%d)" % phase
+        print(self.name, "init(%d)" % phase)
 
     def setup(self):
-        print self.name, "setup()"
+        print(self.name, "setup()")
 
     def finish(self):
-        print self.name, "finish()"
+        print(self.name, "finish()")
 
 
 link0 = sst.Link("Mylink0")

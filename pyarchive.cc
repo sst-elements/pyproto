@@ -36,12 +36,12 @@ namespace SST {
     namespace PyProtoNS {
 
         PyEvent_t *convertEventToPython(SST::Event *event) {
-            PyEvent *pe = dynamic_cast<PyEvent *>(event);
+            auto *pe = dynamic_cast<PyEvent *>(event);
             if (pe) {
                 return pe->getPyObj();
             } else {
 #if 0
-                PyEvent_t *out = NULL;
+                PyEvent_t *out = nullptr;
                 polymorphic_PyEvent_oarchive oa(std::cout, boost::archive::no_header|boost::archive::no_codecvt);
 
                 oa << event;
@@ -49,7 +49,7 @@ namespace SST {
                 return oa.getEvent();
 #endif
             }
-            return NULL;
+            return nullptr;
         }
 
 

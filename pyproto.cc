@@ -42,7 +42,7 @@ namespace SST {
         }
 
 
-        PyProto::PyProto(SST::ComponentId_t id, SST::Params &params) : Component(id) {
+        PyProto::PyProto(SST::ComponentId_t id, SST::Params &) : Component(id) {
             if (!Py_IsInitialized()) { /* ERROR */ }
             size_t idx = pyObjIdx++;
             if (idx >= pyObjects.size())
@@ -69,7 +69,7 @@ namespace SST {
                 std::string &port = that->links->at(nl).first;
                 PyObject *cb = that->links->at(nl).second;
 
-                SST::Link *link = NULL;
+                SST::Link *link = nullptr;
                 if (cb) {
                     link = configureLink(port, new Event::Handler<PyProto, size_t>(this,
                                                                                    &PyProto::linkAction,
@@ -110,7 +110,7 @@ namespace SST {
 
 
         PyEvent_t *PyProto::doLinkRecv(size_t linkNum) {
-            PyEvent_t *res = NULL;
+            PyEvent_t *res = nullptr;
             SST::Link *link = links.at(linkNum);
             Event *event = link->recv();
             if (event) {
@@ -150,7 +150,6 @@ namespace SST {
             Py_XDECREF(res);
             return bres;
         }
-
 
         std::vector<PyProto_t *> PyProto::pyObjects;
         std::atomic <size_t> PyProto::pyObjIdx(0);
