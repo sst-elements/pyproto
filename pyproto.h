@@ -50,6 +50,7 @@ namespace SST {
             }
 
         ImplementSerializable(SST::PyProtoNS::PyEvent);
+
         };
 
 
@@ -65,9 +66,11 @@ namespace SST {
                     COMPONENT_CATEGORY_UNCATEGORIZED
             )
 
+
             SST_ELI_DOCUMENT_PORTS(
                     { "port%d", "Link to another object", {}}
             )
+
 
             PyProto(SST::ComponentId_t, SST::Params &);
 

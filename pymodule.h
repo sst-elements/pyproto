@@ -16,6 +16,7 @@
 
 #ifndef COMPONENTS_PYPROTO_PYMODULE_H
 #define COMPONENTS_PYPROTO_PYMODULE_H
+#include <sst/core/model/element_python.h>
 
 extern "C" {
 

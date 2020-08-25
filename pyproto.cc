@@ -69,7 +69,7 @@ namespace SST {
                 std::string &port = that->links->at(nl).first;
                 PyObject *cb = that->links->at(nl).second;
 
-                SST::Link *link = nullptr;
+                SST::Link *link;
                 if (cb) {
                     link = configureLink(port, new Event::Handler<PyProto, size_t>(this,
                                                                                    &PyProto::linkAction,
@@ -80,7 +80,6 @@ namespace SST {
                 links.push_back(link);
             }
 
-
             that->constructed = true;
         }
 
@@ -88,7 +87,6 @@ namespace SST {
         PyProto::~PyProto() {
             Py_XDECREF(that);
         }
-
 
         void PyProto::init(unsigned int phase) {
             PyObject *res = PyObject_CallMethod((PyObject *) that, (char *) "init", (char *) "I",
@@ -152,8 +150,21 @@ namespace SST {
         }
 
         std::vector<PyProto_t *> PyProto::pyObjects;
-        std::atomic <size_t> PyProto::pyObjIdx(0);
+        std::atomic<size_t> PyProto::pyObjIdx(0);
 
     }
 }
 
+char pyproto[] = {
+#include "pyproto.inc"
+
+        0x00};
+
+class PyProtoPyModule : public SST::SSTElementPythonModule {
+public:
+    explicit PyProtoPyModule(const std::string &library) : SSTElementPythonModule(library) {
+        createPrimaryModule(pyproto, "pyproto.py");
+    }
+
+    SST_ELI_REGISTER_PYTHON_MODULE(PyProtoPyModule, "pyproto", SST_ELI_ELEMENT_VERSION(1, 0, 0))
+};

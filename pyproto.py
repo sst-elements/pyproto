@@ -34,6 +34,7 @@ class PyLink():
 
 class PyProto():
     def __init__(self, name):
+        print(name)
         pass
 
     def addLink(self, link, latency, callback=None):
