@@ -33,25 +33,24 @@
 #include "pyarchive.h"
 
 namespace SST {
-    namespace PyProtoNS {
+namespace PyProtoNS {
 
-        PyEvent_t *convertEventToPython(SST::Event *event) {
-            auto *pe = dynamic_cast<PyEvent *>(event);
-            if (pe) {
-                return pe->getPyObj();
-            } else {
+PyEvent_t *convertEventToPython(SST::Event *event) {
+    auto *pe = dynamic_cast<PyEvent *>(event);
+    if (pe) {
+        return pe->getPyObj();
+    } else {
 #if 0
-                PyEvent_t *out = nullptr;
-                polymorphic_PyEvent_oarchive oa(std::cout, boost::archive::no_header|boost::archive::no_codecvt);
+        PyEvent_t *out = nullptr;
+        polymorphic_PyEvent_oarchive oa(std::cout, boost::archive::no_header|boost::archive::no_codecvt);
 
-                oa << event;
+        oa << event;
 
-                return oa.getEvent();
+        return oa.getEvent();
 #endif
-            }
-            return nullptr;
-        }
-
-
     }
+    return nullptr;
+}
+
+}
 }

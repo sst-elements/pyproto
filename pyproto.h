@@ -22,90 +22,82 @@
 #include <sst/core/link.h>
 #include <sst/core/event.h>
 
-
 extern "C" struct PyEvent_t;
 extern "C" struct PyProto_t;
 extern "C" typedef struct _object PyObject;
 
 namespace SST {
-    namespace PyProtoNS {
+namespace PyProtoNS {
 
-        class PyEvent : public SST::Event {
-        public:
-            explicit PyEvent(PyEvent_t *);
+class PyEvent : public SST::Event {
+  public:
+    explicit PyEvent(PyEvent_t *);
 
-            ~PyEvent() override;
+    ~PyEvent() override;
 
-            PyEvent_t *getPyObj() { return pyE; }
+    PyEvent_t *getPyObj() { return pyE; }
 
-        private:
-            PyEvent_t *pyE{};
+  private:
+    PyEvent_t *pyE{};
 
-            PyEvent() = default; // For serialization only
+    PyEvent() = default; // For serialization only
 
-        public:
-            void serialize_order(SST::Core::Serialization::serializer &ser) override {
-                Event::serialize_order(ser);
-                // TODO:  Serialize pyE
-            }
-
-        ImplementSerializable(SST::PyProtoNS::PyEvent);
-
-        };
-
-
-        class PyProto : public SST::Component {
-        public:
-
-            SST_ELI_REGISTER_COMPONENT(
-                    PyProto,
-                    "pyproto",
-                    "PyProto",
-                    SST_ELI_ELEMENT_VERSION(1, 0, 0),
-                    "Python Prototyping Component",
-                    COMPONENT_CATEGORY_UNCATEGORIZED
-            )
-
-
-            SST_ELI_DOCUMENT_PORTS(
-                    { "port%d", "Link to another object", {}}
-            )
-
-
-            PyProto(SST::ComponentId_t, SST::Params &);
-
-            ~PyProto() override;
-
-            void init(unsigned int) override;
-
-            void setup() override;
-
-            void finish() override;
-
-            static void addComponent(PyProto_t *obj) {
-                pyObjects.push_back(obj);
-            }
-
-            PyEvent_t *doLinkRecv(size_t);
-
-            void doLinkSend(size_t, PyEvent_t *);
-
-
-        protected:
-            bool clock(SST::Cycle_t, PyObject *);
-
-            void linkAction(Event *, size_t);
-
-        private:
-            PyProto_t *that; /* The Python-space representation of this */
-            std::vector<SST::Link *> links;
-
-            static std::vector<PyProto_t *> pyObjects;
-            static std::atomic<size_t> pyObjIdx;
-        };
-
-
+  public:
+    void serialize_order(SST::Core::Serialization::serializer &ser) override {
+        Event::serialize_order(ser);
+        // TODO:  Serialize pyE
     }
+
+  ImplementSerializable(SST::PyProtoNS::PyEvent);
+
+};
+
+class PyProto : public SST::Component {
+  public:
+
+    SST_ELI_REGISTER_COMPONENT(
+        PyProto,
+        "pyproto",
+        "PyProto",
+        SST_ELI_ELEMENT_VERSION(1, 0, 0),
+        "Python Prototyping Component",
+        COMPONENT_CATEGORY_UNCATEGORIZED
+    )
+
+    SST_ELI_DOCUMENT_PORTS(
+        { "port%d", "Link to another object", {}}
+    )
+
+    PyProto(SST::ComponentId_t, SST::Params &);
+
+    ~PyProto() override;
+
+    void init(unsigned int) override;
+
+    void setup() override;
+
+    void finish() override;
+
+    static void addComponent(PyProto_t *);
+
+    PyEvent_t *doLinkRecv(size_t);
+
+    void doLinkSend(size_t, PyEvent_t *);
+
+  protected:
+    bool clock(SST::Cycle_t, PyObject *);
+
+    void linkAction(Event *, size_t);
+
+  private:
+    PyProto_t *that; /* The Python-space representation of this */
+    std::vector<SST::Link *> links;
+
+    static std::vector<PyProto_t *> pyObjects;
+    static std::atomic<size_t> pyObjIdx;
+};
+
+}
 }
 
 #endif

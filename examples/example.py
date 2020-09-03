@@ -54,7 +54,6 @@ class MyObject(PyProto):
     def finish(self):
         print(self.name, "finish()")
 
-
 link0 = sst.Link("Mylink0")
 link1 = sst.Link("Mylink1")
 

@@ -20,8 +20,7 @@
 
 extern "C" {
 
-void *genPyProtoPyModule(void);
-
+void *genPyProtoPyModule();
 
 struct PyEvent_t {
     PyObject_HEAD
@@ -29,14 +28,12 @@ struct PyEvent_t {
     PyObject *dict; /* Holds elements from Events */
 };
 
-
 struct PyLink_t {
     PyObject_HEAD
     PyObject *object; /* PyProto Object */
     char *portName;
     size_t portNumber;
 };
-
 
 struct PyProto_t {
     PyObject_HEAD
@@ -53,20 +50,19 @@ struct PyProto_t {
 
 };
 
-
 }
 
 namespace SST {
-    class Event;
-    namespace PyProtoNS {
-        PyEvent_t *convertEventToPython(SST::Event *);
+class Event;
+namespace PyProtoNS {
+PyEvent_t *convertEventToPython(SST::Event *);
 
-        PyTypeObject *getEventObject();
+PyTypeObject *getEventObject();
 
-        PyTypeObject *getPyProtoObject();
+PyTypeObject *getPyProtoObject();
 
-        PyTypeObject *getPyLinkObject();
-    }
+PyTypeObject *getPyLinkObject();
+}
 }
 
 #endif // COMPONENTS_PYPROTO_PYMODULE_H

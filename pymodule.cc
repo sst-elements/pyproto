@@ -13,8 +13,6 @@
 // information, see the LICENSE file in the top level directory of the
 // distribution.
 
-#include <sst/core/sst_config.h>
-
 #pragma clang diagnostic push
 #pragma clang diagnostic ignored "-Wdeprecated-register"
 
@@ -34,189 +32,217 @@
 extern "C" {
 
 static PyMethodDef moduleMethods[] = {
-        {nullptr, nullptr, 0, nullptr}
+    {nullptr, nullptr, 0, nullptr}
 };
 
 static struct PyModuleDef moduledef = {
-        PyModuleDef_HEAD_INIT,
-        "sst.pyproto",
-        nullptr,
-        1,
-        moduleMethods,
-        nullptr,
-        nullptr,
-        nullptr,
-        nullptr
+    PyModuleDef_HEAD_INIT,
+    "sst.pyproto",
+    nullptr,
+    1,
+    moduleMethods,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr
 };
 
-static int pyEvent_Init(PyEvent_t *self, PyObject *args, PyObject *kwds);
-static void pyEvent_Dealloc(PyEvent_t *self);
+static int pyEvent_Init(PyEvent_t *, PyObject *, PyObject *);
+static void pyEvent_Dealloc(PyEvent_t *);
 static PyMethodDef pyEventMethods[] = {
-        {nullptr, nullptr, 0, nullptr}
+    {nullptr, nullptr, 0, nullptr}
 };
 static PyMemberDef pyEventMembers[] = {
-        {(char *) "type", T_OBJECT, offsetof(PyEvent_t, type), 0, (char *) "Type of Event"},
-        {(char *) "sst",  T_OBJECT, offsetof(PyEvent_t, dict), 0, (char *) "SST Event members"},
-        {nullptr, 0, 0,                                        0, nullptr}
+    {(char *) "type", T_OBJECT, offsetof(PyEvent_t, type), 0, (char *) "Type of Event"},
+    {(char *) "sst", T_OBJECT, offsetof(PyEvent_t, dict), 0, (char *) "SST Event members"},
+    {nullptr, 0, 0, 0, nullptr}
 };
 
 static PyTypeObject PyEventDef = {
-        PyVarObject_HEAD_INIT(nullptr, 0)
-        "sst.pyproto.PyEvent",           /* tp_name */
-        sizeof(PyEvent_t),     /* tp_basicsize */
-        0,                         /* tp_itemsize */
-        (destructor) pyEvent_Dealloc,   /* tp_dealloc */
-        0,                         /* tp_print */
-        nullptr,                         /* tp_getattr */
-        nullptr,                         /* tp_setattr */
-        nullptr,                         /* tp_compare */
-        nullptr,                         /* tp_repr */
-        nullptr,                         /* tp_as_number */
-        nullptr,                         /* tp_as_sequence */
-        nullptr,                         /* tp_as_mapping */
-        nullptr,                         /* tp_hash */
-        nullptr,                         /* tp_call */
-        nullptr,                         /* tp_str */
-        nullptr,                         /* tp_getattro */
-        nullptr,                         /* tp_setattro */
-        nullptr,                         /* tp_as_buffer */
-        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,        /* tp_flags */
-        "PyProto Event",           /* tp_doc */
-        nullptr,                         /* tp_traverse */
-        nullptr,                         /* tp_clear */
-        nullptr,                         /* tp_richcompare */
-        0,                         /* tp_weaklistoffset */
-        nullptr,                         /* tp_iter */
-        nullptr,                         /* tp_iternext */
-        pyEventMethods,            /* tp_methods */
-        pyEventMembers,            /* tp_members */
-        nullptr,                         /* tp_getset */
-        nullptr,                         /* tp_base */
-        nullptr,                         /* tp_dict */
-        nullptr,                         /* tp_descr_get */
-        nullptr,                         /* tp_descr_set */
-        0,                         /* tp_dictoffset */
-        (initproc) pyEvent_Init,    /* tp_init */
-        nullptr,                         /* tp_alloc */
-        nullptr,                         /* tp_new */
+    PyVarObject_HEAD_INIT(nullptr, 0)
+    "sst.pyproto.PyEvent",
+    sizeof(PyEvent_t),
+    0,
+    (destructor) pyEvent_Dealloc,
+    0,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    (Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE),
+    "PyProto Event",
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    nullptr,
+    nullptr,
+    pyEventMethods,
+    pyEventMembers,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    (initproc) pyEvent_Init,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    nullptr,
+    nullptr
 };
 
-
-static int pyLink_Init(PyLink_t *self, PyObject *args, PyObject *kwds);
-static void pyLink_Dealloc(PyLink_t *self);
-static PyObject *pyLink_recv(PyObject *self, PyObject *args);
-static PyObject *pyLink_send(PyObject *self, PyObject *args);
-
+static int pyLink_Init(PyLink_t *, PyObject *, PyObject *);
+static void pyLink_Dealloc(PyLink_t *);
+static PyObject *pyLink_recv(PyObject *, PyObject *);
+static PyObject *pyLink_send(PyObject *, PyObject *);
 
 static PyMethodDef pyLinkMethods[] = {
-        {"recv",  pyLink_recv, METH_NOARGS,  "Receive from a link"},
-        {"send",  pyLink_send, METH_VARARGS, "Send on a link"},
-        {nullptr, nullptr, 0,                nullptr}
+    {"recv", pyLink_recv, METH_NOARGS, "Receive from a link"},
+    {"send", pyLink_send, METH_VARARGS, "Send on a link"},
+    {nullptr, nullptr, 0, nullptr}
 };
-
 
 static PyTypeObject PyLinkDef = {
-        PyVarObject_HEAD_INIT(nullptr, 0)
-        "sst.pyproto.PyLink",           /* tp_name */
-        sizeof(PyLink_t),     /* tp_basicsize */
-        0,                         /* tp_itemsize */
-        (destructor) pyLink_Dealloc,   /* tp_dealloc */
-        0,                         /* tp_print */
-        nullptr,                         /* tp_getattr */
-        nullptr,                         /* tp_setattr */
-        nullptr,                         /* tp_compare */
-        nullptr,                         /* tp_repr */
-        nullptr,                         /* tp_as_number */
-        nullptr,                         /* tp_as_sequence */
-        nullptr,                         /* tp_as_mapping */
-        nullptr,                         /* tp_hash */
-        nullptr,                         /* tp_call */
-        nullptr,                         /* tp_str */
-        nullptr,                         /* tp_getattro */
-        nullptr,                         /* tp_setattro */
-        nullptr,                         /* tp_as_buffer */
-        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,        /* tp_flags */
-        "PyProto Link",            /* tp_doc */
-        nullptr,                         /* tp_traverse */
-        nullptr,                         /* tp_clear */
-        nullptr,                         /* tp_richcompare */
-        0,                         /* tp_weaklistoffset */
-        nullptr,                         /* tp_iter */
-        nullptr,                         /* tp_iternext */
-        pyLinkMethods,             /* tp_methods */
-        nullptr,                         /* tp_members */
-        nullptr,                         /* tp_getset */
-        nullptr,                         /* tp_base */
-        nullptr,                         /* tp_dict */
-        nullptr,                         /* tp_descr_get */
-        nullptr,                         /* tp_descr_set */
-        0,                         /* tp_dictoffset */
-        (initproc) pyLink_Init,     /* tp_init */
-        nullptr,                         /* tp_alloc */
-        nullptr,                         /* tp_new */
+    PyVarObject_HEAD_INIT(nullptr, 0)
+    "sst.pyproto.PyLink",
+    sizeof(PyLink_t),
+    0,
+    (destructor) pyLink_Dealloc,
+    0,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    (Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE),
+    "PyProto Link",
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    nullptr,
+    nullptr,
+    pyLinkMethods,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    (initproc) pyLink_Init,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    nullptr,
+    nullptr
 };
 
-
-static int pyProto_Init(PyProto_t *self, PyObject *args, PyObject *kwds);
-static void pyProto_Dealloc(PyProto_t *self);
-static PyObject *pyProto_addLink(PyObject *self, PyObject *args);
-static PyObject *pyProto_addClock(PyObject *self, PyObject *args);
-static PyObject *pyProto_construct(PyObject *self, PyObject *args);
-static PyObject *pyProto_init(PyObject *self, PyObject *args);
-static PyObject *pyProto_setup(PyObject *self, PyObject *args);
-static PyObject *pyProto_finish(PyObject *self, PyObject *args);
+static int pyProto_Init(PyProto_t *, PyObject *, PyObject *);
+static void pyProto_Dealloc(PyProto_t *);
+static PyObject *pyProto_addLink(PyObject *, PyObject *);
+static PyObject *pyProto_addClock(PyObject *, PyObject *);
+static PyObject *pyProto_construct(PyObject *, PyObject *);
+static PyObject *pyProto_init(PyObject *, PyObject *);
+static PyObject *pyProto_setup(PyObject *, PyObject *);
+static PyObject *pyProto_finish(PyObject *, PyObject *);
 
 static PyMethodDef pyProtoMethods[] = {
-        {"addLink",   pyProto_addLink,   METH_VARARGS, "Add a Link"},
-        {"addClock",  pyProto_addClock,  METH_VARARGS, "Add a clock handler"},
-        {"construct", pyProto_construct, METH_NOARGS,  "Called during Construction"},
-        {"init",      pyProto_init,      METH_O,       "Called during init"},
-        {"setup",     pyProto_setup,     METH_NOARGS,  "Called during setup"},
-        {"finish",    pyProto_finish,    METH_NOARGS,  "Called during finish"},
-        {nullptr,     nullptr, 0,                      nullptr}
+    {"addLink", pyProto_addLink, METH_VARARGS, "Add a Link"},
+    {"addClock", pyProto_addClock, METH_VARARGS, "Add a clock handler"},
+    {"construct", pyProto_construct, METH_NOARGS, "Called during Construction"},
+    {"init", pyProto_init, METH_O, "Called during init"},
+    {"setup", pyProto_setup, METH_NOARGS, "Called during setup"},
+    {"finish", pyProto_finish, METH_NOARGS, "Called during finish"},
+    {nullptr, nullptr, 0, nullptr}
 };
 
 static PyTypeObject PyProtoDef = {
-        PyVarObject_HEAD_INIT(nullptr, 0)
-        "sst.pyproto.PyProto",           /* tp_name */
-        sizeof(PyProto_t),     /* tp_basicsize */
-        0,                         /* tp_itemsize */
-        (destructor) pyProto_Dealloc,   /* tp_dealloc */
-        0,                         /* tp_print */
-        nullptr,                         /* tp_getattr */
-        nullptr,                         /* tp_setattr */
-        nullptr,                         /* tp_compare */
-        nullptr,                         /* tp_repr */
-        nullptr,                         /* tp_as_number */
-        nullptr,                         /* tp_as_sequence */
-        nullptr,                         /* tp_as_mapping */
-        nullptr,                         /* tp_hash */
-        nullptr,                         /* tp_call */
-        nullptr,                         /* tp_str */
-        nullptr,                         /* tp_getattro */
-        nullptr,                         /* tp_setattro */
-        nullptr,                         /* tp_as_buffer */
-        Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE,        /* tp_flags */
-        "PyProto Prototype",       /* tp_doc */
-        nullptr,                         /* tp_traverse */
-        nullptr,                         /* tp_clear */
-        nullptr,                         /* tp_richcompare */
-        0,                         /* tp_weaklistoffset */
-        nullptr,                         /* tp_iter */
-        nullptr,                         /* tp_iternext */
-        pyProtoMethods,            /* tp_methods */
-        nullptr,                         /* tp_members */
-        nullptr,                         /* tp_getset */
-        nullptr,                         /* tp_base */
-        nullptr,                         /* tp_dict */
-        nullptr,                         /* tp_descr_get */
-        nullptr,                         /* tp_descr_set */
-        0,                         /* tp_dictoffset */
-        (initproc) pyProto_Init,    /* tp_init */
-        nullptr,                         /* tp_alloc */
-        nullptr,                         /* tp_new */
+    PyVarObject_HEAD_INIT(nullptr, 0)
+    "sst.pyproto.PyProto",
+    sizeof(PyProto_t),
+    0,
+    (destructor) pyProto_Dealloc,
+    0,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    (Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE),
+    "PyProto Prototype",
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    nullptr,
+    nullptr,
+    pyProtoMethods,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    (initproc) pyProto_Init,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    nullptr,
+    0,
+    nullptr,
+    nullptr
 };
-
 
 void *genPyProtoPyModule(void) {
     // Must return a PyObject
@@ -226,11 +252,10 @@ void *genPyProtoPyModule(void) {
     PyLinkDef.tp_new = PyType_GenericNew;
     PyProtoDef.tp_new = PyType_GenericNew;
 
-    if ((PyType_Ready(&PyEventDef) < 0) ||
-        (PyType_Ready(&PyLinkDef) < 0) ||
-        (PyType_Ready(&PyProtoDef) < 0))
+    if ((PyType_Ready(&PyEventDef) < 0) || (PyType_Ready(&PyLinkDef) < 0) || (PyType_Ready(&PyProtoDef) < 0)) {
         SST::Output::getDefaultObject().fatal(CALL_INFO, -1,
                                               "Failed to instantiate PyProto Python Module");
+    }
 
     PyObject *module = PyModule_Create(&moduledef);
     if (!module)
@@ -256,7 +281,6 @@ void *genPyProtoPyModule(void) {
     return module;
 }
 
-
 /*****      PyEvent      *****/
 
 static int pyEvent_Init(PyEvent_t *self, PyObject *, PyObject *) {
@@ -266,21 +290,19 @@ static int pyEvent_Init(PyEvent_t *self, PyObject *, PyObject *) {
     return 0;
 }
 
-
 static void pyEvent_Dealloc(PyEvent_t *self) {
     Py_XDECREF(self->type);
     Py_XDECREF(self->dict);
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
 
-
 /*****      PyLink      *****/
 
 static int pyLink_Init(PyLink_t *self, PyObject *args, PyObject *) {
     char *p;
-    if (!PyArg_ParseTuple(args, "Osn",
-                          &self->object, &p, &self->portNumber))
+    if (!PyArg_ParseTuple(args, "Osn", &self->object, &p, &self->portNumber)) {
         return -1;
+    }
 
     self->portName = strdup(p);
     Py_XINCREF(self->object);
@@ -288,13 +310,11 @@ static int pyLink_Init(PyLink_t *self, PyObject *args, PyObject *) {
     return 0;
 }
 
-
 static void pyLink_Dealloc(PyLink_t *self) {
     Py_XDECREF(self->object);
     free(self->portName);
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
-
 
 static PyObject *pyLink_recv(PyObject *self, PyObject *) {
     auto *l = (PyLink_t *) self;
@@ -313,21 +333,24 @@ static PyObject *pyLink_send(PyObject *self, PyObject *args) {
     auto *p = (SST::PyProtoNS::PyProto *) ((PyProto_t *) l->object)->component;
 
     PyObject *event = nullptr;
-    if (!PyArg_ParseTuple(args, "O!", &PyEventDef, &event))
+    if (!PyArg_ParseTuple(args, "O!", &PyEventDef, &event)) {
         return nullptr;
+    }
 
     Py_XINCREF(event);
     p->doLinkSend(l->portNumber, (PyEvent_t *) event);
     return PyLong_FromLong(0);
 }
 
-
 /*****      PyProto      *****/
 
 static int pyProto_Init(PyProto_t *self, PyObject *args, PyObject *) {
     char *name;
-    if (!PyArg_ParseTuple(args, "s", &name))
+    if (!PyArg_ParseTuple(args, "s", &name)) {
         return -1;
+    }
+
+    std::cout << "lol\n";
 
     self->name = strdup(name);
     self->clocks = new PyProto_t::clockArray_t();
@@ -338,10 +361,10 @@ static int pyProto_Init(PyProto_t *self, PyObject *args, PyObject *) {
     PyObject *sst_mod = PyMapping_GetItemString(sys_mod_dict, (char *) "sst");
     self->tcomponent = PyObject_CallMethod(sst_mod, (char *) "Component",
                                            (char *) "ss", self->name, (char *) "pyproto.PyProto");
-    if (!self->tcomponent)
+    if (!self->tcomponent) {
         SST::Output::getDefaultObject().fatal(CALL_INFO, -1,
                                               "Failed to load sst.Component\n");
-
+    }
     SST::PyProtoNS::PyProto::addComponent(self);
 
     return 0;
@@ -354,7 +377,6 @@ static void pyProto_Dealloc(PyProto_t *self) {
     free(self->name);
     Py_TYPE(self)->tp_free((PyObject *) self);
 }
-
 
 static PyObject *pyProto_addLink(PyObject *self, PyObject *args) {
     auto *pself = (PyProto_t *) self;
@@ -393,7 +415,6 @@ static PyObject *pyProto_addLink(PyObject *self, PyObject *args) {
     return nlink;
 }
 
-
 static PyObject *pyProto_addClock(PyObject *self, PyObject *args) {
     auto *pself = (PyProto_t *) self;
     if (pself->constructed) {
@@ -415,38 +436,31 @@ static PyObject *pyProto_addClock(PyObject *self, PyObject *args) {
     return PyLong_FromLong(0);
 }
 
-
 static PyObject *pyProto_construct(PyObject *, PyObject *) {
     return PyLong_FromLong(0);
 }
-
 
 static PyObject *pyProto_init(PyObject *, PyObject *) {
     return PyLong_FromLong(0);
 }
 
-
 static PyObject *pyProto_setup(PyObject *, PyObject *) {
     return PyLong_FromLong(0);
 }
-
 
 static PyObject *pyProto_finish(PyObject *, PyObject *) {
     return PyLong_FromLong(0);
 }
 
-
 } /* extern "C" */
 
 
 namespace SST {
-    namespace PyProtoNS {
-        PyTypeObject *getEventObject() { return &PyEventDef; }
+namespace PyProtoNS {
+PyTypeObject *getEventObject() { return &PyEventDef; }
 
-        PyTypeObject *getPyProtoObject() { return &PyProtoDef; }
+PyTypeObject *getPyProtoObject() { return &PyProtoDef; }
 
-        PyTypeObject *getPyLinkObject() { return &PyLinkDef; }
-    }
+PyTypeObject *getPyLinkObject() { return &PyLinkDef; }
 }
-
-
+}
